@@ -35,33 +35,24 @@ const { data } = await app.octokit.request("/app");
 // Read more about custom logging: https://github.com/octokit/core.js#logging
 app.octokit.log.debug(`Authenticated as '${data.name}'`);
 
-// Subscribe to the "pull_request.opened" webhook event
-app.webhooks.on("pull_request.opened", async ({ octokit, payload }) => {
-  console.log(
-    `Received a pull request event for #${payload.pull_request.number}`
-  );
-  try {
-    await octokit.rest.issues.createComment({
-      owner: payload.repository.owner.login,
-      repo: payload.repository.name,
-      issue_number: payload.pull_request.number,
-      body: messageForNewPRs,
-    });
-  } catch (error) {
-    if (error.response) {
-      console.error(
-        `Error! Status: ${error.response.status}. Message: ${error.response.data.message}`
-      );
-    } else {
-      console.error(error);
-    }
-  }
-});
-
 app.webhooks.on("installation", async ({ octokit, payload }) => {
   console.log(`receieved initialize #${payload.pull_request.number}`);
   try {
-    await console.log(octokit, payload);
+    await octokit.request(
+      "POST /repos/dashg-enterprises/cloud-infrastructure/generate",
+      {
+        template_owner: "dashg-enterprises",
+        template_repo: "cloud-infrastructure",
+        owner: "begarland",
+        name: "cloud-infra-test",
+        description: "Clone DashG Enterprises cloud-infrastructure",
+        include_all_branches: false,
+        private: true,
+        headers: {
+          "X-GitHub-Api-Version": "2022-11-28",
+        },
+      }
+    );
   } catch (error) {
     if (error.response) {
       console.error(
