@@ -36,7 +36,7 @@ const { data } = await app.octokit.request("/app");
 app.octokit.log.debug(`Authenticated as '${data.name}'`);
 
 app.webhooks.on("installation", async ({ octokit, payload }) => {
-  console.log(`receieved initialize #${payload.pull_request.number}`);
+  console.log(`receieved initialize #${payload}`);
   try {
     await octokit.request(
       "POST /repos/dashg-enterprises/cloud-infrastructure/generate",
